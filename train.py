@@ -29,7 +29,6 @@ if __name__ == "__main__":
     net.to(device)
 
     traindata = FaceDataset(train = True)
-
     trainloader = torch.utils.data.DataLoader(traindata, batch_size = 4, shuffle = True, num_workers = 4)
 
     train(net, trainloader, device)
