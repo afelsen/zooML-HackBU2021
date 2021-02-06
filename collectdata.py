@@ -53,8 +53,6 @@ def capture_video(path):
         if key == ord('q'):
             break
 
-        print(key)
-
     cap.release()
     cv2.destroyAllWindows()
 
