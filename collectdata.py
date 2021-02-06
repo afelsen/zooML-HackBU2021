@@ -1,8 +1,6 @@
 import cv2
 import numpy as np
 import os
-import time
-import glob
 
 def capture_video(path):
     category = None
