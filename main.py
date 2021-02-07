@@ -22,14 +22,12 @@ def do_update():
     gui.recording(transBox.astype(np.uint8))
 
 def call_periodically():
-    print("call periodically")
+    # print("call periodically")
     do_update()
     gui.root.after(30, call_periodically)
 
-
 gui = GUI.GUI()
-gui.home_page()
-# gui.recording_setup()
+gui.recording_setup()
 
 net = FaceNetwork()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -38,5 +36,6 @@ checkpoint = torch.load("./Models/test.pth",map_location=torch.device('cpu'))
 net.load_state_dict(checkpoint['model_state_dict'])
 net.eval()
 
+# gui.root.after(1, call_periodically)
 gui.root.after(1, call_periodically)
 gui.root.mainloop()

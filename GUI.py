@@ -50,6 +50,7 @@ class GUI:
         # self.root.attributes("-alpha", .5)
         # label = tk.Label(self.root, text = "Spy on your Students").pack()
 
+
     def change_color(self):
         if self.attentive_state.get():
             self.attentive['fg'] = 'green'
@@ -82,7 +83,7 @@ class GUI:
 
 
         start = tk.Button(self.root, text="Start", command=self.close_settings, fg="white", highlightbackground="gray13",highlightthickness=50, font=self.label_font, )
-        start.place(x=450,y=150,width=125,height=50)
+        start.place(x=550,y=200,width=125,height=50)
 
         categories = tk.Label(self.root, text="Choose categories to display", font=self.label_font, bg="black", fg="white", justify="left")
         # categories.grid(row=0, column = 0)
@@ -107,7 +108,7 @@ class GUI:
         for i in range(len(colors)):
             if colors[i] == settings_dict["color"]:
                 self.color.current(i)
-        self.color.place(x=300,y=50,width=90,height=30)
+        self.color.place(x=310,y=200,width=100,height=40)
 
 
     def close_settings(self):
@@ -129,7 +130,6 @@ class GUI:
         self.recording_setup()
 
     def recording_setup(self):
-        print("setup")
         self.root.destroy()
         self.root = tk.Tk()
         self.root.title("ZooML")
@@ -139,8 +139,9 @@ class GUI:
         self.label.place(x=0,y=0,width=self.root.winfo_screenwidth(),height=self.root.winfo_screenheight())
 
     def recording(self, transBox):
-    # def recording(self):
-
+        print(self.isRecording)
+        if not self.isRecording:
+            return
 
         # cv2.imshow("", transBox)
         # cv2.waitKey(0)
