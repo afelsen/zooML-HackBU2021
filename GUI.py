@@ -6,11 +6,13 @@ from PIL import Image, ImageTk
 import numpy
 import json
 import cv2
+import numpy as np
 
 
 class GUI:
     def __init__(self):
 
+        self.isRecording = False
         self.root = tk.Tk()
         self.root.title("ZooML")
         self.root.geometry(str(int(self.root.winfo_screenwidth()/2)) + "x" + str(int(self.root.winfo_screenheight()/2)))
@@ -29,6 +31,7 @@ class GUI:
         self.sleeping = tk.Checkbutton(self.root, text="Sleeping", var=self.sleeping_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
         self.talking = tk.Checkbutton(self.root, text="Talking", var=self.talking_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
 
+        self.label = tk.Label(self.root)
 
         comboStyle = ttk.Style()
         comboStyle.theme_create('combostyle', parent='alt', settings =
@@ -135,14 +138,24 @@ class GUI:
         self.sleeping.grid_forget()
         self.talking.grid_forget()
 
-        self.general_recording()
+        self.recording_setup()
 
-
-    def general_recording(self):
+    def recording_setup(self):
         self.root.destroy()
         self.root = tk.Tk()
         self.root.title("ZooML")
         self.root.geometry(str(self.root.winfo_screenwidth()) + "x" + str(self.root.winfo_screenheight()))
+        self.isRecording = True
+        self.label = tk.Label(self.root)
+        self.label.place(x=0,y=0,width=self.root.winfo_screenwidth(),height=self.root.winfo_screenheight())
+
+    def recording(self, transBox):
+    # def recording(self):
+
+
+        # cv2.imshow("", transBox)
+        # cv2.waitKey(0)
+
 
         os = platform.system()
 
@@ -153,26 +166,32 @@ class GUI:
             self.root.lift()
 
             self.root.wm_attributes("-disabled", True)
-            self.root.wm_attributes("-transparentcolor", "white")
+            self.root.wm_attributes("-transparentcolor", "black")
             label.pack()
         elif os == "Darwin": #Macos
+            self.root.wm_attributes("-transparent", False)
+            self.root.config(bg="black")
+
             self.root.wm_attributes("-transparent", True)
             self.root.config(bg="systemTransparent")
-            img = cv2.imread("images/output.png",cv2.IMREAD_COLOR)
-            # self.root.image = ImageTk.PhotoImage(Image.fromarray(img))
-            self.root.image = ImageTk.PhotoImage(file="images/output.png")
-            label = tk.Label(self.root, image=self.root.image)
-            label.config(bg="systemTransparent")
-            label.pack()
+
+
+            self.root.image = ImageTk.PhotoImage(Image.fromarray(transBox))
+            # self.root.image = ImageTk.PhotoImage(file = "images/output2.png")
+            # cv2.imshow("", transBox)
+            # cv2.waitKey(0)
+            # self.root.image = ImageTk.PhotoImage(Image.fromarray(np.zeros((512,512))))
+
+
+
+
+
+            self.label.config(bg="white", image="")
+            self.label.config(bg="systemTransparent", image=self.root.image)
+            self.label.pack()
+
+            label2 = tk.Label(text="Hello World")
+
         else:
-            print("Unsupported Operating system or operatin system not recognized")
+            print("Unsupported Operating system or operating system not recognized")
             return
-
-def main():
-    gui = GUI()
-    gui.home_page()
-    gui.root.mainloop()
-
-
-
-main()
