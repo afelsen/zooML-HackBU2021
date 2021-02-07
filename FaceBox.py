@@ -11,6 +11,8 @@ import face_recognition as fr
 import numpy as np
 import cv2
 import os
+import torch
+from FaceNetwork import FaceNetwork
 
 def loadEncodings(folder="known_faces/"):
     # Parallel Lists: names[i] is linked to encodings[i] for all i in range(len(names))
@@ -75,18 +77,47 @@ def drawBoxes(frame, foundLocations, addLabels=None, boxColor=(255,100,100), fon
 
     return frame
 
-def getTransBoxes(desktopImage):
+def run_single(net, image, device):
+    image = image[np.newaxis, ..., np.newaxis]
+    image = torch.from_numpy(image)
+
+    with torch.no_grad():
+        image = image.to(device, dtype=torch.float)
+        image = image.permute(0, 3, 1, 2)
+
+        output = net(image)
+
+    _, out = torch.max(output.data, 1) # tensor([[-0.0449, -0.0347, -0.3300, -0.0956,  0.0510]])
+    print(out)
+    categories = ["attentive", "confused", "inattentive", "talking"]
+    return categories[out]
+
+def getTransBoxes(desktopImage, net, device):
     smallFrame = cv2.resize(desktopImage, (0, 0), fx=0.25, fy=0.25)
     foundLocations = findFaces(smallFrame)
 
     # GET LABELS FOR EACH FACE FROM ADIEL HERE
     addLabels = []
     for face in foundLocations:
-        print("Face Found!")
-        addLabels.append("Label's Here")
+        #print("Face Found!")
+        top = face[0] * 4 # scale bounding box back up (was scaled 1/4 earlier for faster processing speed)
+        right = face[1] * 4
+        bottom = face[2] * 4
+        left = face[3] * 4
+        faceImg = np.array(desktopImage)[top:bottom, left:right]
+        faceImg = cv2.resize(faceImg, (128, 128))
+        faceImg = cv2.cvtColor(faceImg, cv2.COLOR_BGR2GRAY)
+        label = run_single(net, faceImg, device)
+
+        addLabels.append(label)
 
     transparentImage = np.zeros((desktopImage.shape[0], desktopImage.shape[1], 4))
     boxedImage = drawBoxes(transparentImage, foundLocations, addLabels=addLabels, boxColor=(255,100,100,255), fontColor=(0,0,0,255), font=cv2.FONT_HERSHEY_DUPLEX)
+
+    #boxedImage = drawBoxes(np.array(desktopImage), foundLocations, addLabels=addLabels, boxColor=(255,100,100), fontColor=(0,0,0), font=cv2.FONT_HERSHEY_DUPLEX)
+
+    #transparentImage = np.zeros((desktopImage.shape[0], desktopImage.shape[1], 3))
+    #boxedImage = drawBoxes(np.array(transparentImage), foundLocations, addLabels=addLabels, boxColor=(255,100,100), fontColor=(0,0,0), font=cv2.FONT_HERSHEY_DUPLEX)
 
     return boxedImage
 
