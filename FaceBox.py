@@ -87,14 +87,9 @@ def run_single(net, image, device):
 
         output = net(image)
 
-<<<<<<< HEAD
     max, out = torch.max(output.data, 1) # tensor([[-0.0449, -0.0347, -0.3300, -0.0956,  0.0510]])
-    print(max, out)
+    print(output.data)
 
-=======
-    _, out = torch.max(output.data, 1)
-    print(out)
->>>>>>> 505e5dd2fa8d1ecbcd603239307d6a331379869b
     categories = ["attentive", "confused", "inattentive", "talking"]
     return categories[out]
 
