@@ -1,9 +1,12 @@
 import tkinter as tk
 import tkinter.font
+from tkinter import ttk
 import platform
 from PIL import Image, ImageTk
 import numpy
 import json
+import cv2
+
 
 class GUI:
     def __init__(self):
@@ -11,8 +14,8 @@ class GUI:
         self.root = tk.Tk()
         self.root.title("ZooML")
         self.root.geometry(str(int(self.root.winfo_screenwidth()/2)) + "x" + str(int(self.root.winfo_screenheight()/2)))
-
         self.label_font = tkinter.font.Font(family='Arial', size=25)
+        self.root.option_add("*Font", self.label_font)
 
         self.attentive_state = tk.BooleanVar()
         self.confused_state = tk.BooleanVar()
@@ -20,12 +23,25 @@ class GUI:
         self.sleeping_state = tk.BooleanVar()
         self.talking_state = tk.BooleanVar()
 
-        self.attentive = tk.Checkbutton(self.root, text="Attentive", var=self.attentive_state, font=self.label_font, bg="black", fg="red", command=self.color)
-        self.confused = tk.Checkbutton(self.root, text="Confused", var=self.confused_state, font=self.label_font, bg="black", fg="red", command=self.color)
-        self.inattentive = tk.Checkbutton(self.root, text="Inattentive", var=self.inattentive_state, font=self.label_font, bg="black", fg="red", command=self.color)
-        self.sleeping = tk.Checkbutton(self.root, text="Sleeping", var=self.sleeping_state, font=self.label_font, bg="black", fg="red", command=self.color)
-        self.talking = tk.Checkbutton(self.root, text="Talking", var=self.talking_state, font=self.label_font, bg="black", fg="red", command=self.color)
+        self.attentive = tk.Checkbutton(self.root, text="Attentive", var=self.attentive_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
+        self.confused = tk.Checkbutton(self.root, text="Confused", var=self.confused_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
+        self.inattentive = tk.Checkbutton(self.root, text="Inattentive", var=self.inattentive_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
+        self.sleeping = tk.Checkbutton(self.root, text="Sleeping", var=self.sleeping_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
+        self.talking = tk.Checkbutton(self.root, text="Talking", var=self.talking_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
 
+
+        comboStyle = ttk.Style()
+        comboStyle.theme_create('combostyle', parent='alt', settings =
+                                    {'TCombobox':
+                                     {'configure':
+                                      {'selectbackground': 'gray13',
+                                       'fieldbackground': 'gray13',
+                                       'background': 'green'
+                                       }}}
+                         )
+        comboStyle.theme_use('combostyle')
+        self.color = ttk.Combobox(self.root, foreground="green")
+        # print(comboStyle.element_options("Combobox.padding"))
 
         # self.root.wm_attributes("-topmost", True)
 
@@ -33,7 +49,7 @@ class GUI:
         # self.root.attributes("-alpha", .5)
         # label = tk.Label(self.root, text = "Spy on your Students").pack()
 
-    def color(self):
+    def change_color(self):
         if self.attentive_state.get():
             self.attentive['fg'] = 'green'
         else:
@@ -90,8 +106,15 @@ class GUI:
         self.talking_state.set(settings_dict["talking"])
         self.talking.grid(row=10,column=0, sticky = 'w')
 
-        self.color()
+        self.change_color()
 
+
+        colors = ("red", "orange", "yellow", "green", "blue", "indigo", "purple")
+        self.color['values'] = colors
+        for i in range(len(colors)):
+            if colors[i] == settings_dict["color"]:
+                self.color.current(i)
+        self.color.place(x=300,y=50,width=90,height=30)
 
 
     def close_settings(self):
@@ -101,6 +124,8 @@ class GUI:
         settings_dict["inattentive"] = self.inattentive_state.get()
         settings_dict["sleeping"] = self.sleeping_state.get()
         settings_dict["talking"] = self.talking_state.get()
+        settings_dict["color"] = self.color.get()
+
         jsonString = json.dumps(settings_dict)
         with open("settings.json", 'w') as settings:
             settings.write(jsonString)
@@ -110,12 +135,11 @@ class GUI:
         self.sleeping.grid_forget()
         self.talking.grid_forget()
 
-        self.root.destroy()
-
         self.general_recording()
 
 
     def general_recording(self):
+        self.root.destroy()
         self.root = tk.Tk()
         self.root.title("ZooML")
         self.root.geometry(str(self.root.winfo_screenwidth()) + "x" + str(self.root.winfo_screenheight()))
@@ -132,12 +156,14 @@ class GUI:
             self.root.wm_attributes("-transparentcolor", "white")
             label.pack()
         elif os == "Darwin": #Macos
-            # self.root.wm_attributes("-transparent", True)
+            self.root.wm_attributes("-transparent", True)
             self.root.config(bg="systemTransparent")
-            img = numpy.zeros((512,512))
-            self.root.image = ImageTk.PhotoImage(Image.fromarray(img))
+            img = cv2.imread("images/output.png",cv2.IMREAD_COLOR)
+            # self.root.image = ImageTk.PhotoImage(Image.fromarray(img))
+            self.root.image = ImageTk.PhotoImage(file="images/output.png")
             label = tk.Label(self.root, image=self.root.image)
             label.config(bg="systemTransparent")
+            label.pack()
         else:
             print("Unsupported Operating system or operatin system not recognized")
             return
