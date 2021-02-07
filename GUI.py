@@ -22,13 +22,11 @@ class GUI:
         self.attentive_state = tk.BooleanVar()
         self.confused_state = tk.BooleanVar()
         self.inattentive_state = tk.BooleanVar()
-        self.sleeping_state = tk.BooleanVar()
         self.talking_state = tk.BooleanVar()
 
         self.attentive = tk.Checkbutton(self.root, text="Attentive", var=self.attentive_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
         self.confused = tk.Checkbutton(self.root, text="Confused", var=self.confused_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
         self.inattentive = tk.Checkbutton(self.root, text="Inattentive", var=self.inattentive_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
-        self.sleeping = tk.Checkbutton(self.root, text="Sleeping", var=self.sleeping_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
         self.talking = tk.Checkbutton(self.root, text="Talking", var=self.talking_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
 
         self.label = tk.Label(self.root)
@@ -68,11 +66,6 @@ class GUI:
         else:
             self.inattentive['fg'] = 'red'
 
-        if self.sleeping_state.get():
-            self.sleeping['fg'] = 'green'
-        else:
-            self.sleeping['fg'] = "red"
-
         if self.talking_state.get():
             self.talking['fg'] = 'green'
         else:
@@ -92,23 +85,20 @@ class GUI:
         start.place(x=450,y=150,width=125,height=50)
 
         categories = tk.Label(self.root, text="Choose categories to display", font=self.label_font, bg="black", fg="white", justify="left")
-        categories.grid(row=0, column = 0)
-
+        # categories.grid(row=0, column = 0)
+        categories.pack()
         self.attentive_state.set(settings_dict["attentive"])
-        self.attentive.grid(row=2,column=0, sticky = 'w')
-
+        # self.attentive.grid(row=2,column=0, sticky = 'w')
+        self.attentive.pack()
         self.confused_state.set(settings_dict["confused"])
-        self.confused.grid(row=4,column=0, sticky = 'w')
-
+        # self.confused.grid(row=4,column=0, sticky = 'w')
+        self.confused.pack()
         self.inattentive_state.set(settings_dict["inattentive"])
-        self.inattentive.grid(row=6,column=0, sticky = 'w')
-
-        self.sleeping_state.set(settings_dict["sleeping"])
-        self.sleeping.grid(row=8,column=0, sticky = 'w')
-
+        # self.inattentive.grid(row=6,column=0, sticky = 'w')
+        self.inattentive.pack()
         self.talking_state.set(settings_dict["talking"])
-        self.talking.grid(row=10,column=0, sticky = 'w')
-
+        # self.talking.grid(row=8,column=0, sticky = 'w')
+        self.talking.pack()
         self.change_color()
 
 
@@ -125,22 +115,21 @@ class GUI:
         settings_dict["attentive"] = self.attentive_state.get()
         settings_dict["confused"] = self.confused_state.get()
         settings_dict["inattentive"] = self.inattentive_state.get()
-        settings_dict["sleeping"] = self.sleeping_state.get()
         settings_dict["talking"] = self.talking_state.get()
         settings_dict["color"] = self.color.get()
 
         jsonString = json.dumps(settings_dict)
         with open("settings.json", 'w') as settings:
             settings.write(jsonString)
-        self.attentive.grid_forget()
-        self.confused.grid_forget()
-        self.inattentive.grid_forget()
-        self.sleeping.grid_forget()
-        self.talking.grid_forget()
+        # self.attentive.grid_forget()
+        # self.confused.grid_forget()
+        # self.inattentive.grid_forget()
+        # self.talking.grid_forget()
 
         self.recording_setup()
 
     def recording_setup(self):
+        print("setup")
         self.root.destroy()
         self.root = tk.Tk()
         self.root.title("ZooML")

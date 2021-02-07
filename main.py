@@ -28,12 +28,14 @@ def call_periodically():
 
 
 gui = GUI.GUI()
-# gui.home_page()
-gui.recording_setup()
+gui.home_page()
+# gui.recording_setup()
 
 net = FaceNetwork()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 net.to(device)
+checkpoint = torch.load("./Models/test.pth",map_location=torch.device('cpu'))
+net.load_state_dict(checkpoint['model_state_dict'])
 net.eval()
 
 gui.root.after(1, call_periodically)
