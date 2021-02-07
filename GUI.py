@@ -6,11 +6,13 @@ from PIL import Image, ImageTk
 import numpy
 import json
 import cv2
+import numpy as np
 
 
 class GUI:
     def __init__(self):
 
+        self.isRecording = False
         self.root = tk.Tk()
         self.root.title("ZooML")
         self.root.geometry(str(int(self.root.winfo_screenwidth()/2)) + "x" + str(int(self.root.winfo_screenheight()/2)))
@@ -142,9 +144,15 @@ class GUI:
         self.root = tk.Tk()
         self.root.title("ZooML")
         self.root.geometry(str(self.root.winfo_screenwidth()) + "x" + str(self.root.winfo_screenheight()))
-
+        self.isRecording = True
 
     def recording(self, transBox):
+    # def recording(self):
+
+
+        # cv2.imshow("", transBox)
+        # cv2.waitKey(0)
+
 
         os = platform.system()
 
@@ -158,11 +166,16 @@ class GUI:
             self.root.wm_attributes("-transparentcolor", "white")
             label.pack()
         elif os == "Darwin": #Macos
-            self.root.wm_attributes("-transparent", True)
+            # self.root.wm_attributes("-transparent", True)
             self.root.config(bg="systemTransparent")
-            self.root.image = ImageTk.PhotoImage(Image.fromarray(transBox))
+            # self.root.image = ImageTk.PhotoImage(Image.fromarray(transBox))
+            self.root.image = ImageTk.PhotoImage(file = "images/output2.png")
+            # cv2.imshow("", transBox)
+            # cv2.waitKey(0)
+            # self.root.image = ImageTk.PhotoImage(Image.fromarray(np.zeros((512,512))))
             label = tk.Label(self.root, image=self.root.image)
-            label.config(bg="systemTransparent")
+            # label.config(bg="systemTransparent")
+            label.pack()
         else:
             print("Unsupported Operating system or operatin system not recognized")
             return
