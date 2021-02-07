@@ -14,7 +14,7 @@ class FaceDataset(Dataset):
         categories = ["attentive", "confused", "inattentive", "talking"]
         for i, category in enumerate(categories):
             cat_data[category] = []
-            for filename in glob.glob(f"{path}/{category}/*.png"):
+            for filename in glob.glob(f"{path}/{category}/*/*.png"):
                 input = cv2.imread(filename, cv2.IMREAD_GRAYSCALE)
 
                 input = cv2.resize(input, (128,128))
