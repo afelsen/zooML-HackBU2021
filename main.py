@@ -32,7 +32,7 @@ gui.recording_setup()
 net = FaceNetwork()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 net.to(device)
-checkpoint = torch.load("./Models/test.pth",map_location=torch.device('cpu'))
+checkpoint = torch.load("./Models/test_2.pth",map_location=torch.device('cpu'))
 net.load_state_dict(checkpoint['model_state_dict'])
 net.eval()
 
