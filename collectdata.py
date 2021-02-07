@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 import os
 
-def capture_video(path):
+def capture_video(path, name):
     category = None
 
     cap = cv2.VideoCapture(0)
@@ -24,7 +24,7 @@ def capture_video(path):
             except:
                 frame_num = 0
 
-            cv2.imwrite(f"{path}/{category}/{frame_num}.png", frame)
+            cv2.imwrite(f"{path}/{category}/{name}/{frame_num}.png", frame)
 
             f = open(f"{path}/{category}/file_num.txt", 'w')
             f.write(f"{frame_num + 1}")
@@ -76,4 +76,4 @@ if __name__ == "__main__":
         except:
             print(f"{path} already exists")
 
-    capture_video("./Data")
+    capture_video("./Data", name)
