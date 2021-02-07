@@ -35,7 +35,7 @@ def getFrame(camera):
 
 def processFrame(frame):
     smallFrame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25) # resize to 1/4 size (processes faster)
-    smallFrame = smallFrame[:, :, ::-1] # convert from BGR (used by v2) to RGB (used by fr)
+    smallFrame = smallFrame[:, :, ::-1] # convert from BGR (used by cv2) to RGB (used by fr)
     return smallFrame
 
 def findFaces(frame):
@@ -75,6 +75,20 @@ def drawBoxes(frame, foundLocations, addLabels=None, boxColor=(255,100,100), fon
 
     return frame
 
+def getTransBoxes(desktopImage):
+    smallFrame = cv2.resize(desktopImage, (0, 0), fx=0.25, fy=0.25)
+    foundLocations = findFaces(smallFrame)
+
+    # GET LABELS FOR EACH FACE FROM ADIEL HERE
+    addLabels = []
+    for face in foundLocations:
+        addLabels.append("Label's Here")
+
+    transparentImage = np.zeros((desktopImage.shape[0], desktopImage.shape[1], 4))
+    boxedImage = drawBoxes(transparentImage, foundLocations, addLabels=addLabels, boxColor=(255,100,100,255), fontColor=(0,0,0,255), font=cv2.FONT_HERSHEY_DUPLEX)
+
+    return boxedImage
+
 def test():
     camera = cv2.VideoCapture(0)
     knownNames, knownEncodings = loadEncodings()
@@ -89,7 +103,7 @@ def test():
         foundLocations = findFaces(smallFrame)
         foundNames = recognizeFaces(smallFrame, foundLocations, knownEncodings, knownNames)
 
-        # Draw bounding boxes on the frame
+        # draw bounding boxes on the frame
         frame = drawBoxes(frame, foundLocations, addLabels=foundNames)
 
         cv2.imshow('Video', frame) # show frame
