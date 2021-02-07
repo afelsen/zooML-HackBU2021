@@ -37,7 +37,7 @@ def train(net, traindata, device):
         print()
 
     print("Saving model...")
-    PATH = "Models/test.pth"
+    PATH = "Models/test_2.pth"
     torch.save({
         'epoch': epoch,
         'model_state_dict': net.state_dict(),
@@ -47,7 +47,7 @@ def train(net, traindata, device):
 
 def test(net, testloader, device):
     net = FaceNetwork().to(device)
-    checkpoint = torch.load("./Models/test.pth")
+    checkpoint = torch.load("./Models/test_2.pth")
     net.load_state_dict(checkpoint['model_state_dict'])
 
     running_accuracy = 0
@@ -69,7 +69,7 @@ def test(net, testloader, device):
     print(f"testing accuracy: {running_accuracy / len(testloader)}")
 
 def test_single(net, image):
-    checkpoint = torch.load("./Models/test.pth")
+    checkpoint = torch.load("./Models/test_2.pth")
     net.load_state_dict(checkpoint['model_state_dict'])
 
     net.eval()
@@ -92,14 +92,15 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     net.to(device)
 
-    traindata = FaceDataset("./Nick_Data", train = True)
+    traindata = FaceDataset("./Data_all", train = True)
     trainloader = torch.utils.data.DataLoader(traindata, batch_size = 4, shuffle = True, num_workers = 4)
 
-    testdata = FaceDataset("./Nick_Data", train = False)
+    testdata = FaceDataset("./Data_all", train = False)
     testloader = torch.utils.data.DataLoader(traindata, batch_size = 4, shuffle = False, num_workers = 4)
 
     train(net, trainloader, device)
     test(net, testloader, device)
 
-    # image = cv2.imread("Nick_Data/attentive/5.png", cv2.IMREAD_GRAYSCALE)
-    # test_single(net, image)
+    for i in range(10):
+        image = cv2.imread(f"Nick_Data/inattentive/{i}.png", cv2.IMREAD_GRAYSCALE)
+        test_single(net, image)
