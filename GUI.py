@@ -169,6 +169,9 @@ class GUI:
             self.root.wm_attributes("-transparentcolor", "black")
             label.pack()
         elif os == "Darwin": #Macos
+            self.root.wm_attributes("-transparent", False)
+            self.root.config(bg="black")
+
             self.root.wm_attributes("-transparent", True)
             self.root.config(bg="systemTransparent")
 
@@ -183,6 +186,7 @@ class GUI:
 
 
 
+            self.label.config(bg="white", image="")
             self.label.config(bg="systemTransparent", image=self.root.image)
             self.label.pack()
 

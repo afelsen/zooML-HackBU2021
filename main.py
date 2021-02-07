@@ -6,7 +6,7 @@ import numpy as np
 import cv2
 
 def do_update():
-    FACTOR = 1
+    FACTOR = .5
 
     ss = screenShot.screen_shot()
     transBox = FaceBox.getTransBoxes(ss)
