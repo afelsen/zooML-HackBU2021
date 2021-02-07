@@ -147,7 +147,7 @@ class GUI:
         self.root.geometry(str(self.root.winfo_screenwidth()) + "x" + str(self.root.winfo_screenheight()))
         self.isRecording = True
         self.label = tk.Label(self.root)
-
+        self.label.place(x=0,y=0,width=self.root.winfo_screenwidth(),height=self.root.winfo_screenheight())
 
     def recording(self, transBox):
     # def recording(self):
@@ -191,4 +191,3 @@ class GUI:
         else:
             print("Unsupported Operating system or operating system not recognized")
             return
-

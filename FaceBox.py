@@ -82,6 +82,7 @@ def getTransBoxes(desktopImage):
     # GET LABELS FOR EACH FACE FROM ADIEL HERE
     addLabels = []
     for face in foundLocations:
+        print("Face Found!")
         addLabels.append("Label's Here")
 
     transparentImage = np.zeros((desktopImage.shape[0], desktopImage.shape[1], 4))
