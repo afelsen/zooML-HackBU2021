@@ -31,5 +31,5 @@ def call_periodically():
 gui = GUI.GUI()
 # gui.home_page()
 gui.recording_setup()
-gui.root.after(100, call_periodically)
+gui.root.after(1, call_periodically)
 gui.root.mainloop()

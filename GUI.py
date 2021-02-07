@@ -31,6 +31,7 @@ class GUI:
         self.sleeping = tk.Checkbutton(self.root, text="Sleeping", var=self.sleeping_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
         self.talking = tk.Checkbutton(self.root, text="Talking", var=self.talking_state, font=self.label_font, bg="black", fg="red", command=self.change_color)
 
+        self.label = tk.Label(self.root)
 
         comboStyle = ttk.Style()
         comboStyle.theme_create('combostyle', parent='alt', settings =
@@ -145,6 +146,8 @@ class GUI:
         self.root.title("ZooML")
         self.root.geometry(str(self.root.winfo_screenwidth()) + "x" + str(self.root.winfo_screenheight()))
         self.isRecording = True
+        self.label = tk.Label(self.root)
+
 
     def recording(self, transBox):
     # def recording(self):
@@ -163,20 +166,29 @@ class GUI:
             self.root.lift()
 
             self.root.wm_attributes("-disabled", True)
-            self.root.wm_attributes("-transparentcolor", "white")
+            self.root.wm_attributes("-transparentcolor", "black")
             label.pack()
         elif os == "Darwin": #Macos
-            # self.root.wm_attributes("-transparent", True)
+            self.root.wm_attributes("-transparent", True)
             self.root.config(bg="systemTransparent")
-            # self.root.image = ImageTk.PhotoImage(Image.fromarray(transBox))
-            self.root.image = ImageTk.PhotoImage(file = "images/output2.png")
+
+
+            self.root.image = ImageTk.PhotoImage(Image.fromarray(transBox))
+            # self.root.image = ImageTk.PhotoImage(file = "images/output2.png")
             # cv2.imshow("", transBox)
             # cv2.waitKey(0)
             # self.root.image = ImageTk.PhotoImage(Image.fromarray(np.zeros((512,512))))
-            label = tk.Label(self.root, image=self.root.image)
-            # label.config(bg="systemTransparent")
-            label.pack()
+
+
+
+
+
+            self.label.config(bg="systemTransparent", image=self.root.image)
+            self.label.pack()
+
+            label2 = tk.Label(text="Hello World")
+
         else:
-            print("Unsupported Operating system or operatin system not recognized")
+            print("Unsupported Operating system or operating system not recognized")
             return
 
