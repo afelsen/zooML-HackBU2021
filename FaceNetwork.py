@@ -7,19 +7,31 @@ class FaceNetwork(nn.Module):
 
         self.cnn_layers = nn.Sequential(
             # Defining a 2D convolution layer
-            nn.Conv2d(in_channels = 3, out_channels = 4, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(4),
-            nn.ReLU(inplace=True),
+            nn.Conv2d(in_channels = 1, out_channels = 8, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(8),
+            nn.Sigmoid(),
             nn.MaxPool2d(kernel_size=2, stride=2),
             # Defining another 2D convolution layer
-            nn.Conv2d(in_channels = 4, out_channels = 4, kernel_size=3, stride=1, padding=1),
-            nn.BatchNorm2d(4),
-            nn.ReLU(inplace=True),
+            nn.Conv2d(in_channels = 8, out_channels = 16, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(16),
+            nn.Sigmoid(),
             nn.MaxPool2d(kernel_size=2, stride=2),
+
+            # Defining another 2D convolution layer
+            nn.Conv2d(in_channels = 16, out_channels = 16, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(16),
+            nn.Sigmoid(),
+            nn.MaxPool2d(kernel_size=2, stride=2),
+
+            # Defining another 2D convolution layer
+            nn.Conv2d(in_channels = 16, out_channels = 4, kernel_size=3, stride=1, padding=1),
+            nn.BatchNorm2d(4),
+            nn.Sigmoid(),
+            # nn.MaxPool2d(kernel_size=2, stride=2),
         )
 
         self.linear_layers = nn.Sequential(
-            nn.Linear(in_features = 4096, out_features = 100),
+            nn.Linear(in_features = 1024, out_features = 100),
             nn.Linear(in_features = 100, out_features = 5)
         )
 
