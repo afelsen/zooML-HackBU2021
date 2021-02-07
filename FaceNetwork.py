@@ -32,7 +32,7 @@ class FaceNetwork(nn.Module):
 
         self.linear_layers = nn.Sequential(
             nn.Linear(in_features = 1024, out_features = 100),
-            nn.Linear(in_features = 100, out_features = 5)
+            nn.Linear(in_features = 100, out_features = 4)
         )
 
     def forward(self, x):

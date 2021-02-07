@@ -2,13 +2,15 @@ from FaceNetwork import FaceNetwork
 from Dataset import FaceDataset
 
 import torch
+import cv2
+import numpy as np
 
 
 def train(net, traindata, device):
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(net.parameters(), lr=0.07)
 
-    for epoch in range(50):
+    for epoch in range(25):
         running_loss = 0
         running_accuracy = 0
         for i, data in enumerate(traindata, 0):
@@ -66,6 +68,23 @@ def test(net, testloader, device):
 
     print(f"testing accuracy: {running_accuracy / len(testloader)}")
 
+def test_single(net, image):
+    checkpoint = torch.load("./Models/test.pth")
+    net.load_state_dict(checkpoint['model_state_dict'])
+
+    net.eval()
+
+    image = image[np.newaxis, ..., np.newaxis]
+    image = torch.from_numpy(image)
+    print(image.shape)
+
+    with torch.no_grad():
+        image = image.to(device, dtype=torch.float)
+        image = image.permute(0, 3, 1, 2)
+
+        output = net(image)
+
+        print(output)
 
 
 if __name__ == "__main__":
@@ -79,5 +98,8 @@ if __name__ == "__main__":
     testdata = FaceDataset("./Nick_Data", train = False)
     testloader = torch.utils.data.DataLoader(traindata, batch_size = 4, shuffle = False, num_workers = 4)
 
-    # train(net, trainloader, device)
+    train(net, trainloader, device)
     test(net, testloader, device)
+
+    # image = cv2.imread("Nick_Data/attentive/5.png", cv2.IMREAD_GRAYSCALE)
+    # test_single(net, image)
