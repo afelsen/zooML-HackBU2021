@@ -8,7 +8,7 @@ def train(net, traindata, device):
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(net.parameters(), lr=0.07)
 
-    for epoch in range(100):
+    for epoch in range(50):
         running_loss = 0
         running_accuracy = 0
         for i, data in enumerate(traindata, 0):
@@ -43,13 +43,41 @@ def train(net, traindata, device):
         'loss': loss
     }, PATH)
 
+def test(net, testloader, device):
+    net = FaceNetwork().to(device)
+    checkpoint = torch.load("./Models/test.pth")
+    net.load_state_dict(checkpoint['model_state_dict'])
+
+    running_accuracy = 0
+    with torch.no_grad():
+        for data in testloader:
+            inputs, labels = data[0].to(device=device, dtype=torch.float), data[1].to(device=device, dtype=torch.float)
+            inputs = inputs.permute(0, 3, 1, 2)
+
+            labels = labels.argmax(1)
+            outputs = net(inputs)
+
+            total = labels.size(0)
+            _, outputs = torch.max(outputs.data, 1)
+            correct = (outputs == labels).sum().item()
+            running_accuracy += correct / total
+
+
+
+    print(f"testing accuracy: {running_accuracy / len(testloader)}")
+
+
 
 if __name__ == "__main__":
     net = FaceNetwork()
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     net.to(device)
 
-    traindata = FaceDataset("./Data_richard_crop", train = True)
+    traindata = FaceDataset("./Nick_Data", train = True)
     trainloader = torch.utils.data.DataLoader(traindata, batch_size = 4, shuffle = True, num_workers = 4)
 
-    train(net, trainloader, device)
+    testdata = FaceDataset("./Nick_Data", train = False)
+    testloader = torch.utils.data.DataLoader(traindata, batch_size = 4, shuffle = False, num_workers = 4)
+
+    # train(net, trainloader, device)
+    test(net, testloader, device)
