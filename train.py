@@ -8,7 +8,7 @@ def train(net, traindata, device):
     criterion = torch.nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(net.parameters(), lr=0.07)
 
-    for epoch in range(50):
+    for epoch in range(100):
         running_loss = 0
         running_accuracy = 0
         for i, data in enumerate(traindata, 0):
@@ -33,6 +33,15 @@ def train(net, traindata, device):
 
             print(f"Running loss: {running_loss/(i+1):.3f}\tRunning Accuracy: {running_accuracy/(i+1)}", end = '\r')
         print()
+
+    print("Saving model...")
+    PATH = "Models/test.pth"
+    torch.save({
+        'epoch': epoch,
+        'model_state_dict': net.state_dict(),
+        'optimizer_state_dict': optimizer.state_dict(),
+        'loss': loss
+    }, PATH)
 
 
 if __name__ == "__main__":
