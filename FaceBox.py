@@ -89,6 +89,55 @@ def getTransBoxes(desktopImage):
 
     return boxedImage
 
+def cropImage(path, replaceOriginal=False, resize=True):
+    frame = cv2.imread(path, cv2.IMREAD_COLOR)
+    if resize:
+        smallFrame = cv2.resize(frame, (0, 0), fx=0.25, fy=0.25)
+    else:
+        smallFrame = frame
+    foundLocations = findFaces(smallFrame)
+
+    if not replaceOriginal:
+        # go through cropping out each face
+        for i in range(len(foundLocations)):
+            if resize:
+                top = foundLocations[i][0] * 4 # scale bounding box back up (was scaled 1/4 earlier for faster processing speed)
+                right = foundLocations[i][1] * 4
+                bottom = foundLocations[i][2] * 4
+                left = foundLocations[i][3] * 4
+            else:
+                top = foundLocations[i][0] # scale bounding box back up (was scaled 1/4 earlier for faster processing speed)
+                right = foundLocations[i][1]
+                bottom = foundLocations[i][2]
+                left = foundLocations[i][3]
+
+            faceImg = frame[top:bottom, left:right]
+            cv2.imwrite(path[:path.find(".")] + "_" + str(i) + ".png", faceImg)
+    else:
+        if resize:
+            top = foundLocations[0][0] * 4 # scale bounding box back up (was scaled 1/4 earlier for faster processing speed)
+            right = foundLocations[0][1] * 4
+            bottom = foundLocations[0][2] * 4
+            left = foundLocations[0][3] * 4
+        else:
+            top = foundLocations[0][0] # scale bounding box back up (was scaled 1/4 earlier for faster processing speed)
+            right = foundLocations[0][1]
+            bottom = foundLocations[0][2]
+            left = foundLocations[0][3]
+
+        faceImg = frame[top:bottom, left:right]
+        cv2.imwrite(path, faceImg)
+
+def cropDataset(root="Data/", resize=True):
+    for folder in os.listdir(root):
+        if folder != ".DS_Store":
+            for file in os.listdir(root + folder + "/"):
+                if file != ".DS_Store":
+                    try:
+                        cropImage(root + folder + "/" + file, replaceOriginal=True, resize=resize)
+                    except:
+                        print("Could Not Find Face: " + root + folder + "/" + file)
+
 def test():
     camera = cv2.VideoCapture(0)
     knownNames, knownEncodings = loadEncodings()
@@ -114,4 +163,6 @@ def test():
     cv2.destroyAllWindows()
 
 if __name__ == "__main__":
-    test()
+    #test()
+    #cropImage("images/input.png")
+    cropDataset()
