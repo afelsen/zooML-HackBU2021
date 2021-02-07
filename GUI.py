@@ -135,14 +135,16 @@ class GUI:
         self.sleeping.grid_forget()
         self.talking.grid_forget()
 
-        self.general_recording()
+        self.recording_setup()
 
-
-    def general_recording(self):
+    def recording_setup(self):
         self.root.destroy()
         self.root = tk.Tk()
         self.root.title("ZooML")
         self.root.geometry(str(self.root.winfo_screenwidth()) + "x" + str(self.root.winfo_screenheight()))
+
+
+    def recording(self, transBox):
 
         os = platform.system()
 
@@ -158,21 +160,10 @@ class GUI:
         elif os == "Darwin": #Macos
             self.root.wm_attributes("-transparent", True)
             self.root.config(bg="systemTransparent")
-            img = cv2.imread("images/output.png",cv2.IMREAD_COLOR)
-            # self.root.image = ImageTk.PhotoImage(Image.fromarray(img))
-            self.root.image = ImageTk.PhotoImage(file="images/output.png")
+            self.root.image = ImageTk.PhotoImage(Image.fromarray(transBox))
             label = tk.Label(self.root, image=self.root.image)
             label.config(bg="systemTransparent")
-            label.pack()
         else:
             print("Unsupported Operating system or operatin system not recognized")
             return
 
-def main():
-    gui = GUI()
-    gui.home_page()
-    gui.root.mainloop()
-
-
-
-main()
